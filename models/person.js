@@ -12,7 +12,7 @@ const personSchema = new mongoose.Schema({
     work:{
         type:String,
         enum: {
-         values: ['chef','waiter','manager'], //  Restricts a string field to a set of allowed values.
+         values: ['chef','waiter','owner'], //  Restricts a string field to a set of allowed values.
          message: '{VALUE} is not supported' 
         },
         required:true

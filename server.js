@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const db = require("./db");
+require('dotenv').config();
 
 //bodyParser
 const bodyParser = require("body-parser");
@@ -25,6 +26,8 @@ const menuRoutes = require("./routes/menuRouter");
 // Use the routers
 app.use("/menu", menuRoutes);
 
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000
+
+app.listen(PORT, () => {
   console.log("App started listening on port 3000");
 });

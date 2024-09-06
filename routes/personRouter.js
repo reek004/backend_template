@@ -41,7 +41,7 @@ router.post("/", async (req, res) => {
 
 //Put or Patch for put method id has to be specified
 
-router.patch("/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const customerId = req.params.id; // Use the customerId to retrieve customer data, perform operations, etc.
 
