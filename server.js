@@ -38,8 +38,7 @@ const menuRoutes = require("./routes/menuRouter");
 
 
 // Use the routers
-//logRequest will only be used when /person got hit
-app.use("/person",logRequest,PersonRoutes);
+app.use("/person",logRequest,PersonRoutes);//logRequest will only be used when /person got hit
 //app.use("/person", PersonRoutes);
 app.use("/menu", menuRoutes);
 
