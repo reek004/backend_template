@@ -35,8 +35,17 @@ const personSchema = new mongoose.Schema({
     salary: {
         type: Number,
         required: true
+    },
+    //Defining username and password for verification 
+    username :{
+        type: String,
+        required: true
+    },
+    password :{
+        type :String,
+        required: true,
+        maxlength :16
     }
-
 })
 
 // Creating the person model 

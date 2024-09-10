@@ -3,6 +3,14 @@ const app = express();
 const db = require("./db");
 require("dotenv").config();
 
+//importing passport for authentication and authorization
+const passport = require("passport");
+const localStratagy = require("passport-local");
+
+//Initialize passport
+app.use(passport.initialize());
+
+
 //bodyParser 
 const bodyParser = require("body-parser");
 app.use(bodyParser.json()); //Stores the data in req.body 
