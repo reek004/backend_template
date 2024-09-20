@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 
 const personSchema = new mongoose.Schema({
   name: {
@@ -49,7 +50,33 @@ const personSchema = new mongoose.Schema({
   },
 });
 
-// Creating the person model
+//pre middleware for genarating hashedPassword
 
+personSchema.pre('save', async function(next){
+    const person = this; // Create a local reference to the current object context
+
+    if(!person.isModified('password')) return next();
+
+    try {
+      //Creating the salt for hasing
+
+      const salt = await bcrypt.genSalt(10);
+
+      //Creating the hashed password
+      const hashedPasswrd = bcrypt.hash(person.password,salt);
+
+      //Assigning the hashed password to passwrd to be saved in db
+      person.password = hashedPasswrd;
+      
+    } 
+    catch (error) {
+      return next(error);
+    }
+
+})
+
+
+
+// Creating the person model
 const Person = mongoose.model("Person", personSchema);
 module.exports = Person;

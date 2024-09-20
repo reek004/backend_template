@@ -11,7 +11,7 @@ const Person = require("./models/person");
 passport.use(
   new localStratagy(async (USRNAME, PSSWRD, done) => {
     try {
-      console.log("Recived Credentials : ", USRNAME, PSSWRD);
+      //console.log("Recived Credentials : ", USRNAME, PSSWRD);
       const user = await Person.findOne({ username: USRNAME });
       if (!user) {
         return done(null, false, { message: "Invalid User name" });
