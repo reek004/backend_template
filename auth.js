@@ -9,15 +9,17 @@ const Person = require("./models/person");
 /*Verifcation function :
     takes three parameter username password and done as a call back*/
 passport.use(
-  new localStratagy(async (USRNAME, PSSWRD, done) => {
+  new localStratagy(async (username, password, done) => {
     try {
       //console.log("Recived Credentials : ", USRNAME, PSSWRD);
-      const user = await Person.findOne({ username: USRNAME });
+      const user = await Person.findOne({ username });
       if (!user) {
         return done(null, false, { message: "Invalid User name" });
       }
-      const isPasswordMatch = user.password == PSSWRD ? true : false;
-
+      const isPasswordMatch = await user.comparePassword(
+        password,
+        user.password
+      );
       //done is a callback provided in passport
       if (isPasswordMatch) {
         return done(null, user);
