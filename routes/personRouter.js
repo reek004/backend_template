@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const Person = require("../models/person");
+const { generateToken,jwtAuthMiddleware } = require("../middlewares/jwtAuthMiddleware");
 
 //________________Person_________________
 
 //Get method to fetch the person data
-router.get("/", async (req, res) => {
+router.get("/",jwtAuthMiddleware,async (req, res) => {
   try {
     const personData = await Person.find();
     console.log("Data fetched");
@@ -17,9 +18,29 @@ router.get("/", async (req, res) => {
     });
   }
 });
+//Profile route
 
-//Posting the person data (Post Method adding a new data is the DB)
-router.post("/", async (req, res) => {
+router.get('/profile',jwtAuthMiddleware, async (req,res)=>{
+  try {
+  const user = req.userPayload;
+  const userId = user.id;
+  const profileDetails = await Person.findById(userId);
+  res.status(201).json(profileDetails);
+  
+} catch (error) {
+  res.status(501).json({
+    error: error.message,
+  });
+}
+  
+})
+
+
+
+//Posting the person data (Post Method adding a new data in the DB)
+//SignUp
+// Upon signup Genetating the token 
+router.post("/signup", async (req, res) => {
   try {
     const data = req.body; //The request is stored in req.body
 
@@ -30,7 +51,20 @@ router.post("/", async (req, res) => {
     const response = await newPerson.save();
     console.log("Data saved");
 
-    res.status(200).json(response);
+    //Generating the token 
+    //sending the payload
+
+    const payload = {
+      id : response.id,
+      username : response.username
+    }
+
+    console.log(JSON.stringify(payload))
+    const token = generateToken(payload);// This genarate token function is written in /middlewares/jwtAuthMiddleware
+    console.log('Token is :'+ token);
+
+
+    res.status(200).json({Response : response , Token : token});
   } catch (error) {
     console.log("Error saving person:");
     res.status(501).json({
@@ -38,6 +72,38 @@ router.post("/", async (req, res) => {
     });
   }
 });
+
+
+//Creating login route
+
+router.post('/login',async (req,res)=>{
+  //Taking the uname and password from req.body
+  try {
+  const {username,password} = req.body;
+  const user = await Person.findOne({username : username});
+  //Checking the user name and password
+  if(!user || !(await user.comparePassword(password))){
+    res.status(401).json("Invalid id or Password");
+  }
+
+  //Generating the token
+  
+  const payload ={
+    id : user.id,
+    username : user.username
+  }
+
+  const token = generateToken(payload)
+
+  res.status(201).json({token : token})
+} 
+catch (error) {
+    res.status(501).json(error.message)
+}
+
+})
+
+
 
 //Put or Patch for put method id has to be specified
 
